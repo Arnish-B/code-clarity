@@ -1,64 +1,35 @@
 "use strict";
+/*
+ * ATTENTION: An "eval-source-map" devtool has been used.
+ * This devtool is neither made for production nor for readable output files.
+ * It uses "eval()" calls to create a separate source file with attached SourceMaps in the browser devtools.
+ * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
+ * or disable the default devtool with "devtool: false".
+ * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
+ */
 (() => {
 var exports = {};
-exports.id = 565;
-exports.ids = [565];
+exports.id = "pages/api/generate";
+exports.ids = ["pages/api/generate"];
 exports.modules = {
 
-/***/ 961:
+/***/ "openai":
+/*!*************************!*\
+  !*** external "openai" ***!
+  \*************************/
+/***/ ((module) => {
+
+module.exports = require("openai");
+
+/***/ }),
+
+/***/ "(api)/./pages/api/generate.js":
+/*!*******************************!*\
+  !*** ./pages/api/generate.js ***!
+  \*******************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-// ESM COMPAT FLAG
-__webpack_require__.r(__webpack_exports__);
-
-// EXPORTS
-__webpack_require__.d(__webpack_exports__, {
-  "default": () => (/* binding */ generate)
-});
-
-;// CONCATENATED MODULE: external "openai"
-const external_openai_namespaceObject = require("openai");
-;// CONCATENATED MODULE: ./pages/api/generate.js
-
-const configuration = new external_openai_namespaceObject.Configuration({
-    apiKey: process.env.OPENAI_API_KEY
-});
-const openai = new external_openai_namespaceObject.OpenAIApi(configuration);
-const basePromptPrefix = `
-Make a table of all the key points of the code below, and also make a list of technical details such as time complexity and space complexity if applicable. Include errors (logical, syntactic and semantic) if any:
-
-Code:
-`;
-const generateAction = async (req, res)=>{
-    const baseCompletion = await openai.createCompletion({
-        model: "text-davinci-003",
-        prompt: `${basePromptPrefix}${req.body.userInput}`,
-        temperature: 0.7,
-        max_tokens: 250
-    });
-    const basePromptOutput = baseCompletion.data.choices.pop();
-    const secondPrompt = `
-    Use the table of contents and also the code along with it to generate it's explanation such that a 10 year old can understand it
-
-    Title: ${req.body.userInput}
-
-    Table of Contents: ${basePromptOutput.text}
-
-    Code Explanation:
-    `;
-    const secondPromptCompletion = await openai.createCompletion({
-        model: "text-davinci-003",
-        prompt: `${secondPrompt}`,
-        temperature: 0.6,
-        max_tokens: 1500
-    });
-    const secondPromptOutput = secondPromptCompletion.data.choices.pop();
-    res.status(200).json({
-        output: secondPromptOutput
-    });
-};
-/* harmony default export */ const generate = (generateAction);
-
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n/* harmony import */ var openai__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! openai */ \"openai\");\n/* harmony import */ var openai__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(openai__WEBPACK_IMPORTED_MODULE_0__);\n\nconst configuration = new openai__WEBPACK_IMPORTED_MODULE_0__.Configuration({\n    apiKey: process.env.OPENAI_API_KEY\n});\nconst openai = new openai__WEBPACK_IMPORTED_MODULE_0__.OpenAIApi(configuration);\n// const basePromptPrefix =\n// `\n// Make a table of all the key points of the code below, and also make a list of technical details such as time complexity and space complexity if applicable. Include errors (logical, syntactic and semantic) if any:\n// Code:\n// `\n// const generateAction = async (req, res) => {\n//   const baseCompletion = await openai.createCompletion({\n//     model: 'text-davinci-003',\n//     prompt: `${basePromptPrefix}${req.body.userInput}`,\n//     temperature: 0.7,\n//     max_tokens: 250,\n//   });\n//   const basePromptOutput = baseCompletion.data.choices.pop();\n//   const secondPrompt = \n//     `\n//     Use the table of contents and also the code along with it to generate it's explanation such that a 10 year old can understand it\n//     Title: ${req.body.userInput}\n//     Table of Contents: ${basePromptOutput.text}\n//     Code Explanation:\n//     `\n//     const secondPromptCompletion = await openai.createCompletion({\n//         model: 'text-davinci-003',\n//         prompt: `${secondPrompt}`,\n//         temperature: 0.6,\n//         max_tokens: 1500,\n//       });\n//       const secondPromptOutput = secondPromptCompletion.data.choices.pop();\n//       console.log(secondPromptOutput.text);\n//   res.status(200).json({ output: secondPromptOutput });\n// };\n// export default generateAction;\nconst basePromptPrefix = `\nMake a table of all the key points of the code below, and also make a list of technical details such as time complexity and space complexity if applicable. Include errors (logical, syntactic and semantic) if any:\n\nCode:\n`;\nconst generateAction = async (req, res)=>{\n    console.log(`API: ${basePromptPrefix}${req.body.userInput}`);\n    const baseCompletion = await openai.createCompletion({\n        model: \"text-davinci-003\",\n        prompt: `${basePromptPrefix}${req.body.userInput}`,\n        temperature: 0.8,\n        max_tokens: 250\n    });\n    const basePromptOutput = baseCompletion.data.choices.pop();\n    // I build Prompt #2.\n    const secondPrompt = `\n    Use the table of contents and also the code along with it to generate it's explanation such that a 10 year old can understand it\n\n    Code: ${req.body.userInput}\n\n    Table of Contents: ${basePromptOutput.text}\n\n    Code Explanation:\n    `;\n    // I call the OpenAI API a second time with Prompt #2\n    const secondPromptCompletion = await openai.createCompletion({\n        model: \"text-davinci-003\",\n        prompt: `${secondPrompt}`,\n        // I set a higher temperature for this one. Up to you!\n        temperature: 0.85,\n        // I also increase max_tokens.\n        max_tokens: 1250\n    });\n    // Get the output\n    const secondPromptOutput = secondPromptCompletion.data.choices.pop();\n    // Send over the Prompt #2's output to our UI instead of Prompt #1's.\n    res.status(200).json({\n        output: secondPromptOutput\n    });\n};\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (generateAction);\n//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiKGFwaSkvLi9wYWdlcy9hcGkvZ2VuZXJhdGUuanMuanMiLCJtYXBwaW5ncyI6Ijs7Ozs7O0FBQWtEO0FBRWxELE1BQU1FLGdCQUFnQixJQUFJRixpREFBYUEsQ0FBQztJQUNwQ0csUUFBUUMsUUFBUUMsR0FBRyxDQUFDQyxjQUFjO0FBQ3RDO0FBRUEsTUFBTUMsU0FBUyxJQUFJTiw2Q0FBU0EsQ0FBQ0M7QUFFN0IsMkJBQTJCO0FBQzNCLElBQUk7QUFDSix1TkFBdU47QUFFdk4sUUFBUTtBQUNSLElBQUk7QUFDSiwrQ0FBK0M7QUFFL0MsMkRBQTJEO0FBQzNELGlDQUFpQztBQUNqQywwREFBMEQ7QUFDMUQsd0JBQXdCO0FBQ3hCLHVCQUF1QjtBQUN2QixRQUFRO0FBRVIsZ0VBQWdFO0FBRWhFLDBCQUEwQjtBQUMxQixRQUFRO0FBQ1IsdUlBQXVJO0FBRXZJLG1DQUFtQztBQUVuQyxrREFBa0Q7QUFFbEQsd0JBQXdCO0FBQ3hCLFFBQVE7QUFFUixxRUFBcUU7QUFDckUscUNBQXFDO0FBQ3JDLHFDQUFxQztBQUNyQyw0QkFBNEI7QUFDNUIsNEJBQTRCO0FBQzVCLFlBQVk7QUFFWiw4RUFBOEU7QUFDOUUsOENBQThDO0FBRTlDLDBEQUEwRDtBQUMxRCxLQUFLO0FBRUwsaUNBQWlDO0FBRWpDLE1BQU1NLG1CQUNOLENBQUM7Ozs7QUFJRCxDQUFDO0FBRUQsTUFBTUMsaUJBQWlCLE9BQU9DLEtBQUtDLE1BQVE7SUFDekNDLFFBQVFDLEdBQUcsQ0FBQyxDQUFDLEtBQUssRUFBRUwsaUJBQWlCLEVBQUVFLElBQUlJLElBQUksQ0FBQ0MsU0FBUyxDQUFDLENBQUM7SUFFM0QsTUFBTUMsaUJBQWlCLE1BQU1ULE9BQU9VLGdCQUFnQixDQUFDO1FBQ25EQyxPQUFPO1FBQ1BDLFFBQVEsQ0FBQyxFQUFFWCxpQkFBaUIsRUFBRUUsSUFBSUksSUFBSSxDQUFDQyxTQUFTLENBQUMsQ0FBQztRQUNsREssYUFBYTtRQUNiQyxZQUFZO0lBQ2Q7SUFFQSxNQUFNQyxtQkFBbUJOLGVBQWVPLElBQUksQ0FBQ0MsT0FBTyxDQUFDQyxHQUFHO0lBRXhELHFCQUFxQjtJQUNyQixNQUFNQyxlQUNKLENBQUM7OztVQUdLLEVBQUVoQixJQUFJSSxJQUFJLENBQUNDLFNBQVMsQ0FBQzs7dUJBRVIsRUFBRU8saUJBQWlCSyxJQUFJLENBQUM7OztJQUczQyxDQUFDO0lBRUgscURBQXFEO0lBQ3JELE1BQU1DLHlCQUF5QixNQUFNckIsT0FBT1UsZ0JBQWdCLENBQUM7UUFDM0RDLE9BQU87UUFDUEMsUUFBUSxDQUFDLEVBQUVPLGFBQWEsQ0FBQztRQUN6QixzREFBc0Q7UUFDdEROLGFBQWE7UUFDZiw4QkFBOEI7UUFDNUJDLFlBQVk7SUFDZDtJQUVBLGlCQUFpQjtJQUNqQixNQUFNUSxxQkFBcUJELHVCQUF1QkwsSUFBSSxDQUFDQyxPQUFPLENBQUNDLEdBQUc7SUFFbEUscUVBQXFFO0lBQ3JFZCxJQUFJbUIsTUFBTSxDQUFDLEtBQUtDLElBQUksQ0FBQztRQUFFQyxRQUFRSDtJQUFtQjtBQUNwRDtBQUVBLGlFQUFlcEIsY0FBY0EsRUFBQyIsInNvdXJjZXMiOlsid2VicGFjazovL3NjcmF0Y2hwYWQvLi9wYWdlcy9hcGkvZ2VuZXJhdGUuanM/NjI3YyJdLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgeyBDb25maWd1cmF0aW9uLCBPcGVuQUlBcGkgfSBmcm9tICdvcGVuYWknO1xuXG5jb25zdCBjb25maWd1cmF0aW9uID0gbmV3IENvbmZpZ3VyYXRpb24oe1xuICAgIGFwaUtleTogcHJvY2Vzcy5lbnYuT1BFTkFJX0FQSV9LRVksXG59KTtcblxuY29uc3Qgb3BlbmFpID0gbmV3IE9wZW5BSUFwaShjb25maWd1cmF0aW9uKTtcblxuLy8gY29uc3QgYmFzZVByb21wdFByZWZpeCA9XG4vLyBgXG4vLyBNYWtlIGEgdGFibGUgb2YgYWxsIHRoZSBrZXkgcG9pbnRzIG9mIHRoZSBjb2RlIGJlbG93LCBhbmQgYWxzbyBtYWtlIGEgbGlzdCBvZiB0ZWNobmljYWwgZGV0YWlscyBzdWNoIGFzIHRpbWUgY29tcGxleGl0eSBhbmQgc3BhY2UgY29tcGxleGl0eSBpZiBhcHBsaWNhYmxlLiBJbmNsdWRlIGVycm9ycyAobG9naWNhbCwgc3ludGFjdGljIGFuZCBzZW1hbnRpYykgaWYgYW55OlxuXG4vLyBDb2RlOlxuLy8gYFxuLy8gY29uc3QgZ2VuZXJhdGVBY3Rpb24gPSBhc3luYyAocmVxLCByZXMpID0+IHtcblxuLy8gICBjb25zdCBiYXNlQ29tcGxldGlvbiA9IGF3YWl0IG9wZW5haS5jcmVhdGVDb21wbGV0aW9uKHtcbi8vICAgICBtb2RlbDogJ3RleHQtZGF2aW5jaS0wMDMnLFxuLy8gICAgIHByb21wdDogYCR7YmFzZVByb21wdFByZWZpeH0ke3JlcS5ib2R5LnVzZXJJbnB1dH1gLFxuLy8gICAgIHRlbXBlcmF0dXJlOiAwLjcsXG4vLyAgICAgbWF4X3Rva2VuczogMjUwLFxuLy8gICB9KTtcbiAgXG4vLyAgIGNvbnN0IGJhc2VQcm9tcHRPdXRwdXQgPSBiYXNlQ29tcGxldGlvbi5kYXRhLmNob2ljZXMucG9wKCk7XG4gIFxuLy8gICBjb25zdCBzZWNvbmRQcm9tcHQgPSBcbi8vICAgICBgXG4vLyAgICAgVXNlIHRoZSB0YWJsZSBvZiBjb250ZW50cyBhbmQgYWxzbyB0aGUgY29kZSBhbG9uZyB3aXRoIGl0IHRvIGdlbmVyYXRlIGl0J3MgZXhwbGFuYXRpb24gc3VjaCB0aGF0IGEgMTAgeWVhciBvbGQgY2FuIHVuZGVyc3RhbmQgaXRcblxuLy8gICAgIFRpdGxlOiAke3JlcS5ib2R5LnVzZXJJbnB1dH1cblxuLy8gICAgIFRhYmxlIG9mIENvbnRlbnRzOiAke2Jhc2VQcm9tcHRPdXRwdXQudGV4dH1cblxuLy8gICAgIENvZGUgRXhwbGFuYXRpb246XG4vLyAgICAgYFxuXG4vLyAgICAgY29uc3Qgc2Vjb25kUHJvbXB0Q29tcGxldGlvbiA9IGF3YWl0IG9wZW5haS5jcmVhdGVDb21wbGV0aW9uKHtcbi8vICAgICAgICAgbW9kZWw6ICd0ZXh0LWRhdmluY2ktMDAzJyxcbi8vICAgICAgICAgcHJvbXB0OiBgJHtzZWNvbmRQcm9tcHR9YCxcbi8vICAgICAgICAgdGVtcGVyYXR1cmU6IDAuNixcbi8vICAgICAgICAgbWF4X3Rva2VuczogMTUwMCxcbi8vICAgICAgIH0pO1xuXG4vLyAgICAgICBjb25zdCBzZWNvbmRQcm9tcHRPdXRwdXQgPSBzZWNvbmRQcm9tcHRDb21wbGV0aW9uLmRhdGEuY2hvaWNlcy5wb3AoKTtcbi8vICAgICAgIGNvbnNvbGUubG9nKHNlY29uZFByb21wdE91dHB1dC50ZXh0KTtcblxuLy8gICByZXMuc3RhdHVzKDIwMCkuanNvbih7IG91dHB1dDogc2Vjb25kUHJvbXB0T3V0cHV0IH0pO1xuLy8gfTtcblxuLy8gZXhwb3J0IGRlZmF1bHQgZ2VuZXJhdGVBY3Rpb247XG5cbmNvbnN0IGJhc2VQcm9tcHRQcmVmaXggPVxuYFxuTWFrZSBhIHRhYmxlIG9mIGFsbCB0aGUga2V5IHBvaW50cyBvZiB0aGUgY29kZSBiZWxvdywgYW5kIGFsc28gbWFrZSBhIGxpc3Qgb2YgdGVjaG5pY2FsIGRldGFpbHMgc3VjaCBhcyB0aW1lIGNvbXBsZXhpdHkgYW5kIHNwYWNlIGNvbXBsZXhpdHkgaWYgYXBwbGljYWJsZS4gSW5jbHVkZSBlcnJvcnMgKGxvZ2ljYWwsIHN5bnRhY3RpYyBhbmQgc2VtYW50aWMpIGlmIGFueTpcblxuQ29kZTpcbmBcblxuY29uc3QgZ2VuZXJhdGVBY3Rpb24gPSBhc3luYyAocmVxLCByZXMpID0+IHtcbiAgY29uc29sZS5sb2coYEFQSTogJHtiYXNlUHJvbXB0UHJlZml4fSR7cmVxLmJvZHkudXNlcklucHV0fWApXG5cbiAgY29uc3QgYmFzZUNvbXBsZXRpb24gPSBhd2FpdCBvcGVuYWkuY3JlYXRlQ29tcGxldGlvbih7XG4gICAgbW9kZWw6ICd0ZXh0LWRhdmluY2ktMDAzJyxcbiAgICBwcm9tcHQ6IGAke2Jhc2VQcm9tcHRQcmVmaXh9JHtyZXEuYm9keS51c2VySW5wdXR9YCxcbiAgICB0ZW1wZXJhdHVyZTogMC44LFxuICAgIG1heF90b2tlbnM6IDI1MCxcbiAgfSk7XG4gIFxuICBjb25zdCBiYXNlUHJvbXB0T3V0cHV0ID0gYmFzZUNvbXBsZXRpb24uZGF0YS5jaG9pY2VzLnBvcCgpO1xuXG4gIC8vIEkgYnVpbGQgUHJvbXB0ICMyLlxuICBjb25zdCBzZWNvbmRQcm9tcHQgPSBcbiAgICBgXG4gICAgVXNlIHRoZSB0YWJsZSBvZiBjb250ZW50cyBhbmQgYWxzbyB0aGUgY29kZSBhbG9uZyB3aXRoIGl0IHRvIGdlbmVyYXRlIGl0J3MgZXhwbGFuYXRpb24gc3VjaCB0aGF0IGEgMTAgeWVhciBvbGQgY2FuIHVuZGVyc3RhbmQgaXRcblxuICAgIENvZGU6ICR7cmVxLmJvZHkudXNlcklucHV0fVxuXG4gICAgVGFibGUgb2YgQ29udGVudHM6ICR7YmFzZVByb21wdE91dHB1dC50ZXh0fVxuXG4gICAgQ29kZSBFeHBsYW5hdGlvbjpcbiAgICBgXG4gIFxuICAvLyBJIGNhbGwgdGhlIE9wZW5BSSBBUEkgYSBzZWNvbmQgdGltZSB3aXRoIFByb21wdCAjMlxuICBjb25zdCBzZWNvbmRQcm9tcHRDb21wbGV0aW9uID0gYXdhaXQgb3BlbmFpLmNyZWF0ZUNvbXBsZXRpb24oe1xuICAgIG1vZGVsOiAndGV4dC1kYXZpbmNpLTAwMycsXG4gICAgcHJvbXB0OiBgJHtzZWNvbmRQcm9tcHR9YCxcbiAgICAvLyBJIHNldCBhIGhpZ2hlciB0ZW1wZXJhdHVyZSBmb3IgdGhpcyBvbmUuIFVwIHRvIHlvdSFcbiAgICB0ZW1wZXJhdHVyZTogMC44NSxcblx0XHQvLyBJIGFsc28gaW5jcmVhc2UgbWF4X3Rva2Vucy5cbiAgICBtYXhfdG9rZW5zOiAxMjUwLFxuICB9KTtcbiAgXG4gIC8vIEdldCB0aGUgb3V0cHV0XG4gIGNvbnN0IHNlY29uZFByb21wdE91dHB1dCA9IHNlY29uZFByb21wdENvbXBsZXRpb24uZGF0YS5jaG9pY2VzLnBvcCgpO1xuXG4gIC8vIFNlbmQgb3ZlciB0aGUgUHJvbXB0ICMyJ3Mgb3V0cHV0IHRvIG91ciBVSSBpbnN0ZWFkIG9mIFByb21wdCAjMSdzLlxuICByZXMuc3RhdHVzKDIwMCkuanNvbih7IG91dHB1dDogc2Vjb25kUHJvbXB0T3V0cHV0IH0pO1xufTtcblxuZXhwb3J0IGRlZmF1bHQgZ2VuZXJhdGVBY3Rpb247Il0sIm5hbWVzIjpbIkNvbmZpZ3VyYXRpb24iLCJPcGVuQUlBcGkiLCJjb25maWd1cmF0aW9uIiwiYXBpS2V5IiwicHJvY2VzcyIsImVudiIsIk9QRU5BSV9BUElfS0VZIiwib3BlbmFpIiwiYmFzZVByb21wdFByZWZpeCIsImdlbmVyYXRlQWN0aW9uIiwicmVxIiwicmVzIiwiY29uc29sZSIsImxvZyIsImJvZHkiLCJ1c2VySW5wdXQiLCJiYXNlQ29tcGxldGlvbiIsImNyZWF0ZUNvbXBsZXRpb24iLCJtb2RlbCIsInByb21wdCIsInRlbXBlcmF0dXJlIiwibWF4X3Rva2VucyIsImJhc2VQcm9tcHRPdXRwdXQiLCJkYXRhIiwiY2hvaWNlcyIsInBvcCIsInNlY29uZFByb21wdCIsInRleHQiLCJzZWNvbmRQcm9tcHRDb21wbGV0aW9uIiwic2Vjb25kUHJvbXB0T3V0cHV0Iiwic3RhdHVzIiwianNvbiIsIm91dHB1dCJdLCJzb3VyY2VSb290IjoiIn0=\n//# sourceURL=webpack-internal:///(api)/./pages/api/generate.js\n");
 
 /***/ })
 
@@ -69,7 +40,7 @@ const generateAction = async (req, res)=>{
 var __webpack_require__ = require("../../webpack-api-runtime.js");
 __webpack_require__.C(exports);
 var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-var __webpack_exports__ = (__webpack_exec__(961));
+var __webpack_exports__ = (__webpack_exec__("(api)/./pages/api/generate.js"));
 module.exports = __webpack_exports__;
 
 })();
